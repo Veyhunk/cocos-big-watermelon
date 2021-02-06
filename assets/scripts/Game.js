@@ -120,27 +120,36 @@ cc.Class({
 
     initOneFruit(id = 1) {
         this.fruitCount++
-        this.currentFruit = this.createFruitOnPos(0, 400, id)
+        if (this.nextFruit) {
+            this.currentFruit = this.nextFruit
+            this.nextFruit = this.createFruitOnPos(80, 450, id)
+        } else {
+            this.currentFruit = this.createFruitOnPos(0, 400, id)
+            this.nextFruit = this.createFruitOnPos(80, 450, id)
+        }
+        this.nextFruit.scale = 0.3
+        this.currentFruit.scale = 0.6
+        this.currentFruit.setPosition(cc.v2(0, 400));
     },
 
     // 监听屏幕点击
     onTouchStart(e) {
         if (this.isCreating) return
         this.isCreating = true
-        const {width, height} = this.node
+        const { width, height } = this.node
 
 
         const fruit = this.currentFruit
 
         const pos = e.getLocation()
-        let {x, y} = pos
+        let { x, y } = pos
         x = x - width / 2
         y = y - height / 2
 
         const action = cc.sequence(cc.moveBy(0.3, cc.v2(x, 0)).easing(cc.easeCubicActionIn()), cc.callFunc(() => {
             // 开启物理效果
             this.startFruitPhysics(fruit)
-
+            fruit.released = true
             // 1s后重新生成一个
             this.scheduleOnce(() => {
                 const nextId = this.getNextFruitId()
@@ -163,6 +172,7 @@ cc.Class({
             return 2
         } else {
             // 随机返回前5个
+            // return 11;
             return Math.floor(Math.random() * 5) + 1
         }
     },
@@ -187,8 +197,8 @@ cc.Class({
         fruit.on(cc.Node.EventType.TOUCH_START, (e) => {
             // 选择道具时直接消除对应水果
             if (this.useFinger && fruit !== this.currentFruit) {
-                const {x, y, width} = fruit
-                this.createFruitJuice(config.id, cc.v2({x, y}), width)
+                const { x, y, width } = fruit
+                this.createFruitJuice(config.id, cc.v2({ x, y }), width)
                 e.stopPropagation()
                 this.useFinger = false
                 fruit.removeFromParent(true)
@@ -213,7 +223,7 @@ cc.Class({
         return fruit
     },
     // 两个水果碰撞
-    onSameFruitContact({self, other}) {
+    onSameFruitContact({ self, other }) {
         other.node.off('sameContact') // 两个node都会触发，todo 看看有没有其他方法只展示一次的
 
         const id = other.getComponent('Fruit').id
@@ -221,16 +231,16 @@ cc.Class({
         self.node.removeFromParent(true)
         other.node.removeFromParent(true)
 
-        const {x, y} = other.node
+        const { x, y } = other.node
 
-        this.createFruitJuice(id, cc.v2({x, y}), other.node.width)
+        this.createFruitJuice(id, cc.v2({ x, y }), other.node.width)
 
         this.addScore(id)
 
         const nextId = id + 1
         if (nextId <= 11) {
             const newFruit = this.createFruitOnPos(x, y, nextId)
-
+            newFruit.released = true
             this.startFruitPhysics(newFruit)
 
             // 展示动画 todo 动画效果需要调整
@@ -255,11 +265,14 @@ cc.Class({
         // 展示动画
         let juice = cc.instantiate(this.juicePrefab);
         this.node.addChild(juice);
-
-        const config = this.juices[id - 1]
+        let jid = id - 1;
+        console.log({jid});
+        const config = this.juices[jid]
         const instance = juice.getComponent('Juice')
-        instance.init(config)
-        instance.showJuice(pos, n)
+        if (config) {
+            instance.init(config)
+            instance.showJuice(pos, n)
+        }
     },
     // 添加得分分数
     addScore(fruitId) {

@@ -18,8 +18,8 @@ cc.Class({
         if (self.node && other.node) {
             const s = self.node.getComponent('Fruit')
             const o = other.node.getComponent('Fruit')
-            if (s && o && s.id === o.id) {
-                self.node.emit('sameContact', {self, other});
+            if (s && o && s.node.released && o.node.released && s.id === o.id) {
+                self.node.emit('sameContact', { self, other });
             }
         }
     },

@@ -180,7 +180,7 @@
       "array": [
         0,
         0,
-        572.4427919015139,
+        831.3843876330611,
         0,
         0,
         0,
@@ -370,7 +370,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -258.554,
+        -238.006,
         419.138,
         0,
         0,
@@ -423,7 +423,7 @@
     "_batchAsBitmap": false,
     "_styleFlags": 0,
     "_underlineHeight": 0,
-    "_N$horizontalAlign": 1,
+    "_N$horizontalAlign": 0,
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",
     "_N$overflow": 0,
@@ -471,8 +471,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        209.138,
-        419.208,
+        479.767,
+        426.718,
         0,
         0,
         0,
