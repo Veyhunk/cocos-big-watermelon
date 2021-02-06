@@ -21,6 +21,10 @@ cc.Class({
     },
 
     init(data) {
+        if (!data) {
+            this.particle = null
+            return
+        }
         this.particle = data.particle
         this.circle = data.particle
         this.slash = data.slash
@@ -28,6 +32,9 @@ cc.Class({
 
     // 合并时的动画效果
     showJuice(pos, width) {
+        if (!this.particle) {
+            return
+        }
         // 果粒
         for (let i = 0; i < 10; ++i) {
             const node = new cc.Node('Sprite');
